@@ -7,22 +7,25 @@ socket.on('disconnect', () => console.log(`Disconnected from server`));
 
 socket.on('newMessage', message => {
     let formattedTime = moment(message.createdAt).format('h:mm a');
-    let li = $('<li></li>');
-
-    li.text(`${message.from} ${formattedTime}: ${message.text}`);
-
-    $('#messages__list').append(li);
+    let template = $('#message__template').html();
+    let html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createAt: formattedTime
+    });
+    
+    $('#messages__list').append(html);
 });
 
 socket.on('newLocationMessage', message => {
     let formattedTime = moment(message.createdAt).format('h:mm a');
-    let li = $('<li></li>');
-    let a = $('<a target="_blank">My current location</a>');
-
-        li.text(`${message.from} ${formattedTime}: `);
-        a.attr('href', message.url);
-        li.append(a);
-        $('#messages__list').append(li);
+    let template = $('#message__template-location').html();
+    let html = Mustache.render(template, {
+        from: message.from,
+        url: message.url,
+        createAt: formattedTime
+    });
+    $('#messages__list').append(html);
 });
 
 $('#message__form').on('submit', ev => {
