@@ -156,6 +156,7 @@ button:disabled {
 
 .message {
   padding: 10px;
+  border: 1px dashed rgba(128, 128, 128, 0.40);
 }
 
 .message__title {
