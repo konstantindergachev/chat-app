@@ -31,10 +31,10 @@ socket.on('connect', () => {
 socket.on('disconnect', () => console.log(`Disconnected from server`));
 
 socket.on('updateUserList', users => {
-    let ol = $('<ol></ol>');
+    let ol = $('<ol class="chat__sidebar-list"></ol>');
 
     users.forEach(user => {
-        ol.append($('<li></li>').text(user));
+        ol.append($('<li class="chat__sidebar-item"></li>').text(user));
     });
 
     $('#users').html(ol);
