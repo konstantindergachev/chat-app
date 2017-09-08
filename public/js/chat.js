@@ -11,6 +11,7 @@ function scrollToBottom(params) {
     let newMessageHeight = newMessage.innerHeight();
     let lastMessageHeight = newMessage.prev().innerHeight();
 
+
     //Calculation
     if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight)
         messages.scrollTop(scrollHeight);
@@ -20,21 +21,23 @@ socket.on('connect', () => {
     let params = $.deparam(window.location.search);
 
     socket.emit('join', params, err => {
+
         if (err) {
             alert(err);
             window.location.href = '/';
         } else
             console.log('No error');
+
     });
 });
 
 socket.on('disconnect', () => console.log(`Disconnected from server`));
 
 socket.on('updateUserList', users => {
-    let ol = $('<ol></ol>');
+    let ol = $('<ol class="chat__sidebar-list"></ol>');
 
     users.forEach(user => {
-        ol.append($('<li></li>').text(user));
+        ol.append($('<li class="chat__sidebar-item"></li>').text(user));
     });
 
     $('#users').html(ol);
