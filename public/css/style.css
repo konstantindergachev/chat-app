@@ -20,7 +20,7 @@ label, h3{
   color: #fff2df;
 
 }
-button {
+.btn {
   border: none;
   background: #674d3c;
   color: #fff2df;
@@ -29,15 +29,9 @@ button {
   transition: background .3s ease;
 }
 
-button:hover {
-  border: none;
+.btn:hover {
   background: #d9ad7c;
   padding: 10px;
-}
-
-button:disabled {
-  cursor: default;
-  background: #698ea5;
 }
 
 /*---------- form page ----------*/
@@ -75,6 +69,30 @@ button:disabled {
 .form-field input, .form-field select {
   border: 1px solid #e1e1e1;
   padding: 10px;
+}
+
+/*---------- validation ----------*/
+.error{
+  background: #FF6347;
+}
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: #FFC0CB;
+}
+
+::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #FFC0CB;
+}
+
+:-ms-input-placeholder {
+  /* IE 10+ */
+  color: #FFC0CB;
+}
+
+:-moz-placeholder {
+  /* Firefox 18- */
+  color: #FFC0CB;
 }
 
 /*---------- chat room ----------*/
