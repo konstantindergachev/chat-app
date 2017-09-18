@@ -2,12 +2,13 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-
 const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString} = require('./utils/validation');
 const { Users } = require('./utils/users');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
+
+'user strict';
 
 let app = express();
 let server = http.createServer(app);

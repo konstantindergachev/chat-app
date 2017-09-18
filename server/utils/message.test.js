@@ -1,3 +1,5 @@
+'user strict';
+
 let expect = require('expect');
 let { generateMessage, generateLocationMessage } = require('./message');
 

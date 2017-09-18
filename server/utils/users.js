@@ -1,3 +1,5 @@
+'user strict';
+
 [{
     id: '/#12poiajdspfoif',
     name: 'Konstantin',

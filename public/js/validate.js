@@ -1,3 +1,5 @@
+'user strict';
+
 function Factory(selector) {
     let elements;
     (selector instanceof HTMLElement) ? elements = [selector] :

@@ -1,3 +1,5 @@
+'user strict';
+
 let moment = require('moment');
 
 let generateMessage = (from, text) => {
