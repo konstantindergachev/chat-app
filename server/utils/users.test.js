@@ -1,10 +1,10 @@
+'user strict';
+
 const expect = require('expect');
 const { Users } = require('./users');
 
-'user strict';
-
 describe('Users', () => {
-    let users;
+    let users = "";
 
     beforeEach(() => {
         users = new Users();
@@ -24,54 +24,54 @@ describe('Users', () => {
     });
 
     it('should add new users', () => {
-        let allUsers = new Users();
-        let user = {
+        const allUsers = new Users();
+        const user = {
             id: '123',
             name: 'Konstantin',
             room: 'The Office Fans'
         };
-        let responseUser = allUsers.addUser(user.id, user.name, user.room);
+        const responseUser = allUsers.addUser(user.id, user.name, user.room);
 
         expect(allUsers.users).toEqual([user]);
     });
 
     it('should find user', () => {
-        let userId = '2';
-        let user = users.getUser(userId);
+        const userId = '2';
+        const user = users.getUser(userId);
 
         expect(user.id).toBe(userId);
     });
 
     it('should not find user', () => {
-        let userId = '99';
-        let user = users.getUser(userId);
+        const userId = '99';
+        const user = users.getUser(userId);
 
         expect(user).toNotExist();
     });
 
     it('should return names for node course', () => {
-        let userList = users.getUserList('Node Course');
+        const userList = users.getUserList('Node Course');
 
         expect(userList).toEqual(['Mike', 'Julie']);
     });
 
     it('should return names for react course', () => {
-        let userList = users.getUserList('React Course');
+        const userList = users.getUserList('React Course');
 
         expect(userList).toEqual(['Jen']);
     });
     
     it('should remove a user', () => {
-        let userId = '1';
-        let user = users.removeUser(userId);
+        const userId = '1';
+        const user = users.removeUser(userId);
         
         expect(user.id).toBe(userId);
         expect(users.users.length).toBe(2);
     });
 
     it('should not remove user', () => {
-        let userId = '99';
-        let user = users.removeUser(userId);
+        const userId = '99';
+        const user = users.removeUser(userId);
         
         expect(user).toNotExist();
         expect(users.users.length).toBe(3);

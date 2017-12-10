@@ -1,21 +1,21 @@
+'user strict';
+
 const expect = require('expect');
 const { isRealString } = require('./validation');
 
-'user strict';
-
 describe('isRealString', () => {
     it('should reject non-string values', () => {
-        let res = isRealString(98);
+        const res = isRealString(98);
         expect(res).toBe(false);
     });
     
     it('should reject string with only spaces', () => {
-        let res = isRealString('     ');
+        const res = isRealString('     ');
         expect(res).toBe(false);
     });
     
     it('should reject string with non-space characters', () => {
-        let res = isRealString('   Konstantin   ');
+        const res = isRealString('   Konstantin   ');
         expect(res).toBe(true);
     });
 });
