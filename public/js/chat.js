@@ -1,6 +1,6 @@
-'user strict';
-
 (function(){
+    'user strict';
+
     const socket = io();
     
     const scrollToBottom = params => {
