@@ -1,6 +1,8 @@
 (function(){
     'user strict';
+    
 
+    /*eslint-disable no-console */
     const socket = io();
     
     const scrollToBottom = params => {

@@ -30,7 +30,7 @@ describe('Users', () => {
             name: 'Konstantin',
             room: 'The Office Fans'
         };
-        const responseUser = allUsers.addUser(user.id, user.name, user.room);
+        //const responseUser = allUsers.addUser(user.id, user.name, user.room);
 
         expect(allUsers.users).toEqual([user]);
     });
@@ -60,11 +60,11 @@ describe('Users', () => {
 
         expect(userList).toEqual(['Jen']);
     });
-    
+
     it('should remove a user', () => {
         const userId = '1';
         const user = users.removeUser(userId);
-        
+
         expect(user.id).toBe(userId);
         expect(users.users.length).toBe(2);
     });
@@ -72,7 +72,7 @@ describe('Users', () => {
     it('should not remove user', () => {
         const userId = '99';
         const user = users.removeUser(userId);
-        
+
         expect(user).toNotExist();
         expect(users.users.length).toBe(3);
     });

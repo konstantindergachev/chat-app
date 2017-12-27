@@ -6,7 +6,7 @@
         (selector instanceof HTMLElement) ? elements = [selector] :
             elements = document.querySelectorAll(selector);
         return new Selectors(elements);
-    };
+    }
 
     function Selectors(elements) {
         this.elements = elements;
@@ -23,18 +23,15 @@
             });
             return self;
         };
-    };
+    }
 
     window.onload = function () {
         const fi = Factory('.form__input');
-        const name = document.getElementById('name');
         const form = document.forms.firstForm;
         const inp = document.querySelectorAll('.form__input');
-        const btn = document.querySelector('input[type=submit]');
-        const wrapper = document.querySelector('.centered-form__form');
 
         form.addEventListener('submit', ev => {
-            inp.forEach((item, i) => {
+            inp.forEach(item => {
                 if (item.value === '') {
                     ev.preventDefault();
 
@@ -64,7 +61,7 @@
         });
 
         form.addEventListener('focusout', () => {
-            inp.forEach((item, i) => {
+            inp.forEach(item => {
                 if (item.value === '') {
                     item.classList.add('error');
                     fi.validPlaceholder('placeholder', 'error');

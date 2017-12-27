@@ -3,7 +3,7 @@ const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
 const { generateMessage, generateLocationMessage } = require('./utils/message');
-const { isRealString} = require('./utils/validation');
+const { isRealString } = require('./utils/validation');
 const { Users } = require('./utils/users');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -13,6 +13,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const users = new Users();
 
+/*eslint-disable no-console */
 io.on('connection', socket => {
     console.log(`New user connected`);
 
