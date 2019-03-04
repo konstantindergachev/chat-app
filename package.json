@@ -4,7 +4,7 @@
   "description": "Chat application",
   "main": "index.js",
   "scripts": {
-    "all":"npm-run-all -p start  lint:w",
+    "all": "npm-run-all -p start  lint:w",
     "start": "node server/server.js",
     "lint": "esw webpack.config.* server public/js/validate.js",
     "lint:w": "npm run lint -- --watch",
@@ -12,7 +12,7 @@
     "test-watch": "nodemon --exec 'npm test'"
   },
   "engines": {
-    "node": "8.4.0"
+    "node": "11.9.0"
   },
   "author": "Konstantin Dergachev",
   "license": "ISC",
