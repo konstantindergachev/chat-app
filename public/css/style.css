@@ -28,7 +28,6 @@ label, h3{
   padding: 10px;
   transition: background .3s ease;
 }
-
 .btn:hover {
   background: #d9ad7c;
   padding: 10px;
@@ -37,20 +36,25 @@ label, h3{
 /*---------- form page ----------*/
 .centered-form {
   display: flex;
+  flex-direction: column;
   align-items: center;
   height: 100vh;
   width: 100vw;
   justify-content: center;
   background:#d9ad7c;
 }
-
+.enter{
+  flex: auto;
+  display: flex;
+  align-items: center;
+}
 .centered-form__form{
   background:#a2836e;
   border:1px solid #e1e1e1;
   border-radius:5px;
   padding:0 20px;
-  margin:20px;
-  width:230px
+  /* margin:50% 50%; */
+  width:230px;
 }
 
 .form-field {
@@ -175,7 +179,7 @@ label, h3{
   color: #000000;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 470px) {
   * {
     font-size: 1rem;
   }
@@ -196,4 +200,10 @@ label, h3{
   .chat__footer button {
     margin-right: 0px;
   }
+}
+
+.footer{
+  color: #674d3c;
+  line-height: 1.42;
+  flex-shrink: 0;
 }

@@ -14,49 +14,51 @@ const io = socketIO(server);
 const users = new Users();
 
 /*eslint-disable no-console */
-io.on('connection', socket => {
-    console.log(`New user connected`);
+io.on('connection', (socket) => {
+  socket.on('join', (params, callback) => {
+    console.log(`New user connected - ${params.name}`);
+    if (!isRealString(params.name) || !isRealString(params.room)) return callback('Требуется ваше имя и имя комнаты.');
 
-    socket.on('join', (params, callback) => {
-        if (!isRealString(params.name) || !isRealString(params.room))
-            return callback('Name and room name are required.');
+    socket.join(params.room);
+    users.removeUser(socket.id);
+    users.addUser(socket.id, params.name, params.room);
 
-        socket.join(params.room);
-        users.removeUser(socket.id);
-        users.addUser(socket.id, params.name, params.room);
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room), params.name);
+    socket.emit('newMessage', generateMessage('Администратор', 'Добро пожаловать в наш чат'));
+    socket.broadcast
+      .to(params.room)
+      .emit('newMessage', generateMessage('Администратор', `${params.name} присоединился к нам`));
 
-        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
-        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+    callback();
+  });
 
-        callback();
-    });
+  socket.on('createMessage', (message, callback) => {
+    const user = users.getUser(socket.id);
 
-    socket.on('createMessage', (message, callback) => {
-        const user = users.getUser(socket.id);
+    if (user && isRealString(message.text))
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
 
-        if (user && isRealString(message.text))
-            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+    callback();
+  });
 
-        callback();
-    });
+  socket.on('createLocationMessage', (coords) => {
+    const user = users.getUser(socket.id);
 
-    socket.on('createLocationMessage', coords => {
-        const user = users.getUser(socket.id);
+    if (user)
+      io
+        .to(user.room)
+        .emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+  });
 
-        if (user)
-            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
-    });
+  socket.on('disconnect', () => {
+    const user = users.removeUser(socket.id);
 
-    socket.on('disconnect', () => {
-        const user = users.removeUser(socket.id);
-
-        if (user) {
-            io.to(user.room).emit('updateUserList', users.getUserList(user.room));
-            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
-        }
-    });
+    if (user) {
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room), user.name);
+      io.to(user.room).emit('newMessage', generateMessage('Администратор', `${user.name} ушёл`));
+    }
+  });
 });
 
 app.use(express.static(publicPath));
-server.listen(port, () => console.log(`Server is up on ${port}`));
+server.listen(port, () => console.log(`Сервер поднят на порту: ${port}`));
