@@ -10,21 +10,21 @@
 </head>
 
 <body class="chat">
-    <div class="chat__sidebar">
-        <h3>Болтуны</h3>
-        <button id="chat__out" class="btn">Выход</button>
-        <ol id="users" class="chat__sidebar-list"></ol>
-    </div>
-    <div class="chat__main">
-        <ol id="messages__list" class="chat__messages"></ol>
-        <div class="chat__footer">
-            <form id="message__form" class="message__form">
-                <input class="message__form-input" type="text" name="message" placeholder="Сообщение" autofocus autocomplete="off" />
-                <button class="btn">Отправить</button>
-            </form>
-            <button id="send__location" class="btn">Карта</button>
-        </div>
-    </div>
+      <button id="chat__out" class="btn chat__btn">Выход</button>
+      <div class="chat__sidebar">
+          <h3>Болтуны</h3>
+          <ol id="users" class="chat__sidebar-list"></ol>
+      </div>
+      <div class="chat__main">
+          <ol id="messages__list" class="chat__messages"></ol>
+          <div class="chat__footer">
+              <form id="message__form" class="message__form">
+                  <input class="message__form-input" type="text" name="message" placeholder="Сообщение" autofocus autocomplete="off" />
+                  <button class="btn">Отправить</button>
+              </form>
+              <button id="send__location" class="btn">Карта</button>
+          </div>
+      </div>
 
     <script id="message__template" type="text/template">
         <li class="message">

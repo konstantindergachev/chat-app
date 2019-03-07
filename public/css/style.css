@@ -104,14 +104,14 @@ label, h3{
 }
 
 .chat__sidebar {
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 260px;
   height: 100vh;
   background: #a2836e;
 }
 
 .chat__sidebar h3 {
-  margin: 10px 20px;
+  margin: 10px;
   text-align: left;
 }
 
@@ -132,7 +132,7 @@ label, h3{
 
 .chat__messages {
   flex-grow: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
   list-style-type: none;
   padding: 10px;
   -webkit-overflow-scrolling: touch;
@@ -177,15 +177,23 @@ label, h3{
   color: #000000;
 }
 
-@media (max-width: 430px) {
+@media (max-width: 600px) {
+  h3 {
+    font-size: 1.2rem;
+  }
+  .chat__sidebar-item{
+    font-size: 1rem;
+  }
+}
+@media (max-width: 470px) {
   * {
     font-size: 1rem;
   }
-
-  /* .chat__sidebar {
+  
+  .chat__sidebar {
     display: none;
-  } */
-
+  }
+  
   .chat__footer {
     flex-direction: column;
   }
