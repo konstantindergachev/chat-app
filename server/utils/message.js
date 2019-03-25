@@ -4,7 +4,7 @@ const generateMessage = (from, text) => {
     return {
         from,
         text,
-        createAt: new Date().toLocaleTimeString().split(' ')[0],
+        createAt: new Date().toTimeString().substring(0, 8),
       };
     };
     
