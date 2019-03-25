@@ -4,7 +4,7 @@ const generateMessage = (from, text) => {
     return {
         from,
         text,
-        createAt: new Date().toLocaleString('uk-UK', {timeZone: 'Ukraine'}),
+        createAt: new Date().toLocaleString('uk-UA', {timeZone: 'Ukraine'}),
       };
     };
     
@@ -12,7 +12,7 @@ const generateMessage = (from, text) => {
       return {
         from,
         url: `https://www.google.com/maps?q=${latitude},${longitude}`,
-        createAt: new Date().toLocaleTimeString().split(' ')[0],
+        createAt: new Date().toLocaleString('uk-UA', {timeZone: 'Ukraine'}),
     };
 };
 
