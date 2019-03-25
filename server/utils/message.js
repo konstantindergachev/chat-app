@@ -4,7 +4,7 @@ const generateMessage = (from, text) => {
     return {
         from,
         text,
-        createAt: new Date().toLocaleString('uk-UK', {timeZone: 'Ukrainian'}),
+        createAt: new Date().toLocaleString('uk-UK', {timeZone: 'Ukraine'}),
       };
     };
     
