@@ -17,17 +17,26 @@ const users = new Users();
 io.on('connection', (socket) => {
   socket.on('join', (params, callback) => {
     console.log(`New user connected - ${params.name}`);
-    if (!isRealString(params.name) || !isRealString(params.room)) return callback('Требуется ваше имя и имя комнаты.');
+    if (!isRealString(params.name) || !isRealString(params.room))
+      return callback('Требуется ваше имя и имя комнаты.');
 
     socket.join(params.room);
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
 
-    io.to(params.room).emit('updateUserList', users.getUserList(params.room), params.name);
-    socket.emit('newMessage', generateMessage('Администратор', 'Добро пожаловать в наш чат'));
+    io
+      .to(params.room)
+      .emit('updateUserList', users.getUserList(params.room), params.name);
+    socket.emit(
+      'newMessage',
+      generateMessage('Администратор', 'Добро пожаловать в чат')
+    );
     socket.broadcast
       .to(params.room)
-      .emit('newMessage', generateMessage('Администратор', `${params.name} присоединился к нам`));
+      .emit(
+        'newMessage',
+        generateMessage('Администратор', `${params.name} присоединился к нам`)
+      );
 
     callback();
   });
@@ -36,7 +45,9 @@ io.on('connection', (socket) => {
     const user = users.getUser(socket.id);
 
     if (user && isRealString(message.text))
-      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+      io
+        .to(user.room)
+        .emit('newMessage', generateMessage(user.name, message.text));
 
     callback();
   });
@@ -47,15 +58,25 @@ io.on('connection', (socket) => {
     if (user)
       io
         .to(user.room)
-        .emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        .emit(
+          'newLocationMessage',
+          generateLocationMessage(user.name, coords.latitude, coords.longitude)
+        );
   });
 
   socket.on('disconnect', () => {
     const user = users.removeUser(socket.id);
 
     if (user) {
-      io.to(user.room).emit('updateUserList', users.getUserList(user.room), user.name);
-      io.to(user.room).emit('newMessage', generateMessage('Администратор', `${user.name} ушёл`));
+      io
+        .to(user.room)
+        .emit('updateUserList', users.getUserList(user.room), user.name);
+      io
+        .to(user.room)
+        .emit(
+          'newMessage',
+          generateMessage('Администратор', `${user.name} ушёл`)
+        );
     }
   });
 });
