@@ -1,0 +1,5 @@
+{
+    "name":"node-chat-app",
+    "description":"A simple search application in Node end Express hosted on Heroku",
+    "keywords":["node", "express", "static"]
+}
