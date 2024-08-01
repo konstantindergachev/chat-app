@@ -1,11 +1,14 @@
-(function() {
-  'user strict';
+import { dateFormat } from "./utils/dateFormat.js";
+import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js";
+
+(function () {
+  "user strict";
   /*eslint-disable no-console */
   const socket = io();
   // const scrollToBottom = () => {
   //   //Selectors
-  //   const messages = document.getElementById('messages__list');
-  //   console.log('messages: ', messages);
+  //   const messages = document.getElementById("messages__list");
+  //   console.log("messages: ", messages);
   //   const newMessages = messages.lastElementChild;
   //   //Heights
   //   const clientHight = messages.offsetHeight;
@@ -23,77 +26,57 @@
   //   }
   // };
 
-  const dateFormat = (date) => {
-    return new Intl.DateTimeFormat('ru-RU', {
-      // day: '2-digit',
-      // month: 'long',
-      // year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    }).format(new Date(date));
-  };
-
-  socket.on('connect', () => {
+  socket.on("connect", () => {
     const params = new URL(document.location).searchParams;
-    const name = params.get('name');
-    const room = params.get('room');
+    const name = params.get("name");
+    const room = params.get("room");
     const updParams = { name: name, room: room };
-    socket.emit('join', updParams, (err) => {
+    socket.emit("join", updParams, (err) => {
       if (err) {
         alert(err);
-        window.location.href = '/';
-      } else console.log('No error');
+        window.location.href = "/";
+      } else console.log("Chat is started");
     });
   });
 
-  socket.on('disconnect', (users) => {
-    console.log('disconnect users: ', users);
-    const usersList = document.getElementById('users');
-    console.log('disconnect usersList: ', usersList);
+  socket.on("disconnect", (users) => {
+    console.log("disconnect users: ", users);
+    const usersList = document.getElementById("users");
+    console.log("disconnect usersList: ", usersList);
   });
 
-  const removeDuplicateDOMElement = (originalEl, user) => {
-    const els = document.querySelectorAll(`.item-${user}`);
-    for (let i = 0; i < els.length; i++) {
-      if (els[i] !== originalEl) {
-        els[i].parentNode.removeChild(els[i]);
-      }
-    }
-  };
-
-  socket.on('updateUserList', (users, username) => {
-    const usersList = document.getElementById('users');
+  socket.on("updateUserList", (users, username) => {
+    const usersList = document.getElementById("users");
     users.forEach((user) => {
-      const li = document.createElement('li');
-      li.setAttribute('class', `chat__sidebar-item item-${user}`);
+      const li = document.createElement("li");
+      li.setAttribute("class", `chat__sidebar-item item-${user}`);
       if (users.includes(username)) {
         li.textContent = user;
         usersList.appendChild(li);
         removeDuplicateDOMElement(li, user);
       } else if (users.length !== usersList.childElementCount) {
-        [ ...usersList.childNodes ].forEach(
-          (child) =>
-            child.textContent === username
-              ? usersList.removeChild(child)
-              : false
+        [...usersList.childNodes].forEach((child) =>
+          child.textContent === username ? usersList.removeChild(child) : false
         );
       }
     });
   });
 
-  socket.on('newMessage', (message) => {
+  socket.on("newMessage", (message) => {
     const date = dateFormat(message.createAt);
-    const template = document.getElementById('message__template').innerHTML;
+    const template = document.getElementById("message__template").innerHTML;
+    const clientsCount = message.clientsCount;
     const html = Mustache.render(template, {
+      color: clientsCount === 1 ? "#a2836e" : "#674d3c",
       text: message.text,
       from: message.from,
       createAt: date,
+      role: message.from === "Админ:" ? "admin" : "",
     });
 
-    const msgListContainer = document.getElementById('messages__list');
+    const msgListContainer = document.getElementById("messages__list");
     const fragment = document.createDocumentFragment();
-    const p = document.createElement('p');
+    const p = document.createElement("p");
     p.innerHTML = html;
     while (p.firstChild) {
       fragment.appendChild(p.firstChild);
@@ -104,19 +87,20 @@
     // scrollToBottom();
   });
 
-  socket.on('newLocationMessage', (message) => {
+  socket.on("newLocationMessage", (message) => {
     const date = dateFormat(message.createAt);
-    const template = document.getElementById('message__template-location')
-      .innerHTML;
+    const template = document.getElementById(
+      "message__template-location"
+    ).innerHTML;
     const html = Mustache.render(template, {
       from: message.from,
       url: message.url,
       createAt: date,
     });
 
-    const msgListContainer = document.getElementById('messages__list');
+    const msgListContainer = document.getElementById("messages__list");
     const fragment = document.createDocumentFragment();
-    const span = document.createElement('span');
+    const span = document.createElement("span");
     span.innerHTML = html;
     while (span.firstChild) {
       fragment.appendChild(span.firstChild);
@@ -126,40 +110,40 @@
     // scrollToBottom();
   });
 
-  const msgForm = document.getElementById('message__form');
-  msgForm.addEventListener('submit', (ev) => {
+  const msgForm = document.getElementById("message__form");
+  msgForm.addEventListener("submit", (ev) => {
     ev.preventDefault();
-    const messageTextbox = document.querySelector('[name=message]');
+    const messageTextbox = document.querySelector("[name=message]");
     socket.emit(
-      'createMessage',
+      "createMessage",
       { text: messageTextbox.value },
-      () => (messageTextbox.value = '')
+      () => (messageTextbox.value = "")
     );
   });
 
-  const lockBtn = document.getElementById('send__location');
-  lockBtn.addEventListener('click', () => {
+  const lockBtn = document.getElementById("send__location");
+  lockBtn.addEventListener("click", () => {
     if (!navigator.geolocation)
-      return alert('Геолокация не поддерживается вашим браузером');
-    lockBtn.setAttribute('disabled', 'disabled');
-    lockBtn.textContent = 'Отправка местоположения...';
+      return alert("Геолокация не поддерживается вашим браузером");
+    lockBtn.setAttribute("disabled", "disabled");
+    lockBtn.textContent = "Отправка местоположения...";
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        lockBtn.removeAttribute('disabled');
-        lockBtn.textContent = 'Карта';
-        socket.emit('createLocationMessage', {
+        lockBtn.removeAttribute("disabled");
+        lockBtn.textContent = "Карта";
+        socket.emit("createLocationMessage", {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
       },
       () => {
-        lockBtn.removeAttribute('disabled').textContent =
-          'Отправь местоположение';
-        alert('Нет возможности отправить ваше местоположение');
+        lockBtn.removeAttribute("disabled").textContent =
+          "Отправь местоположение";
+        alert("Нет возможности отправить ваше местоположение");
       }
     );
   });
 
-  const outBtn = document.getElementById('chat__out');
-  outBtn.addEventListener('click', () => (window.location.href = '/'));
+  const outBtn = document.getElementById("chat__out");
+  outBtn.addEventListener("click", () => (window.location.href = "/"));
 })();
