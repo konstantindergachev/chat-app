@@ -5,7 +5,7 @@ const generateMessage = (from, text, clientsCount) => {
     clientsCount,
     from,
     text,
-    createAt: new Date(),
+    createAt: new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kiev" }),
   };
 };
 
