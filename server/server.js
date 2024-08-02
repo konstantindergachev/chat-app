@@ -2,23 +2,29 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketIO = require("socket.io");
-const { generateMessage, generateLocationMessage } = require("./utils/message");
 const { isRealString } = require("./utils/validation");
 const { Users } = require("./utils/users");
-const publicPath = path.join(__dirname, "../public");
-const port = process.env.PORT || 9000;
+const { generateMessage, generateLocationMessage } = require("./utils/message");
+const {
+  CHAT_JOIN_ERROR,
+  ADMIN_ROLE,
+  ADMIN_VALUE,
+  USER_CAME_TO_THE_CHAT,
+  USER_DISCONNECTED,
+  USER_LEAVE_THE_CHAT,
+  SERVER_STARTED,
+} = require("./constants");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 const users = new Users();
 
-/*eslint-disable no-console */
 io.on("connection", (socket) => {
   socket.on("join", (params, callback) => {
     console.log(`${params.name} joined to chat.`);
     if (!isRealString(params.name) || !isRealString(params.room))
-      return callback("Требуется ваше имя и имя комнаты.");
+      return callback(CHAT_JOIN_ERROR);
 
     socket.join(params.room);
     users.removeUser(socket.id);
@@ -29,15 +35,12 @@ io.on("connection", (socket) => {
       users.getUserList(params.room),
       params.name
     );
-    socket.emit(
-      "newMessage",
-      generateMessage("Админ:", "Добро пожаловать в чат")
-    );
+    socket.emit("newMessage", generateMessage(ADMIN_ROLE, ADMIN_VALUE));
     socket.broadcast
       .to(params.room)
       .emit(
         "newMessage",
-        generateMessage("Админ:", `${params.name} присоединился к нам`)
+        generateMessage(ADMIN_ROLE, `${params.name} ${USER_CAME_TO_THE_CHAT}`)
       );
 
     callback();
@@ -67,7 +70,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     const user = users.removeUser(socket.id);
-    console.log(`${user.name} has left the chat.`);
+    console.log(`${user.name} ${USER_DISCONNECTED}`);
     if (user) {
       io.to(user.room).emit(
         "updateUserList",
@@ -76,11 +79,13 @@ io.on("connection", (socket) => {
       );
       io.to(user.room).emit(
         "newMessage",
-        generateMessage("Админ:", `${user.name} ушёл`)
+        generateMessage(ADMIN_ROLE, `${user.name} ${USER_LEAVE_THE_CHAT}`)
       );
     }
   });
 });
 
+const publicPath = path.join(__dirname, "../public");
 app.use(express.static(publicPath));
-server.listen(port, () => console.log(`Server started on port: ${port}`));
+const port = process.env.PORT || 9000;
+server.listen(port, () => console.log(`${SERVER_STARTED} ${port}`));

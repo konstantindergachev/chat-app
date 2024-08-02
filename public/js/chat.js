@@ -1,21 +1,34 @@
+import {
+  GEOLOCATION_ERROR,
+  SERVER_GEOLOCATION_ERROR,
+  USER_COLOR_FIRST,
+  GEOLOCATION_LOADING,
+  GEOLOCATION_RULE,
+  ROOM_INPUT,
+  USER_INPUT,
+  MAP,
+  ADMIN_ROLE,
+  USER_COLOR_SECOND,
+  USER_JOINED,
+  ADMIN_VALUE,
+} from "./constants/index.js";
 import { dateFormat } from "./utils/dateFormat.js";
 import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js";
 
 (function () {
   "user strict";
-  /*eslint-disable no-console */
   const socket = io();
 
   socket.on("connect", () => {
     const params = new URL(document.location).searchParams;
-    const name = params.get("name");
-    const room = params.get("room");
+    const name = params.get(USER_INPUT);
+    const room = params.get(ROOM_INPUT);
     const updParams = { name: name, room: room };
     socket.emit("join", updParams, (err) => {
       if (err) {
         alert(err);
         window.location.href = "/";
-      } else console.log("Chat is started");
+      } else console.log(USER_JOINED);
     });
   });
 
@@ -47,11 +60,11 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
     const template = document.getElementById("message__template").innerHTML;
     const clientsCount = message.clientsCount;
     const html = Mustache.render(template, {
-      color: clientsCount === 1 ? "#a2836e" : "#674d3c",
+      color: clientsCount === 1 ? USER_COLOR_FIRST : USER_COLOR_SECOND,
       text: message.text,
       from: message.from,
       createAt: date,
-      role: message.from === "Админ:" ? "admin" : "",
+      role: message.from === ADMIN_ROLE && ADMIN_VALUE,
     });
 
     const msgListContainer = document.getElementById("messages__list");
@@ -103,23 +116,21 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
 
   const lockBtn = document.getElementById("send__location");
   lockBtn.addEventListener("click", () => {
-    if (!navigator.geolocation)
-      return alert("Геолокация не поддерживается вашим браузером");
+    if (!navigator.geolocation) return alert(GEOLOCATION_ERROR);
     lockBtn.setAttribute("disabled", "disabled");
-    lockBtn.textContent = "Отправка местоположения...";
+    lockBtn.textContent = GEOLOCATION_LOADING;
     navigator.geolocation.getCurrentPosition(
       (position) => {
         lockBtn.removeAttribute("disabled");
-        lockBtn.textContent = "Карта";
+        lockBtn.textContent = MAP;
         socket.emit("createLocationMessage", {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
       },
       () => {
-        lockBtn.removeAttribute("disabled").textContent =
-          "Отправь местоположение";
-        alert("Нет возможности отправить ваше местоположение");
+        lockBtn.removeAttribute("disabled").textContent = GEOLOCATION_RULE;
+        alert(SERVER_GEOLOCATION_ERROR);
       }
     );
   });

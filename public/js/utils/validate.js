@@ -1,9 +1,18 @@
-(function() {
-  'user strict';
+import {
+  NAME_ERROR,
+  ROOM_ERROR,
+  NAME_PLACEHOLDER,
+  ROOM_PLACEHOLDER,
+} from "../constants/index.js";
+
+(function () {
+  "user strict";
 
   function Factory(selector) {
-    let elements = '';
-    selector instanceof HTMLElement ? (elements = [selector]) : (elements = document.querySelectorAll(selector));
+    let elements = "";
+    selector instanceof HTMLElement
+      ? (elements = [selector])
+      : (elements = document.querySelectorAll(selector));
     return new Selectors(elements);
   }
 
@@ -12,7 +21,7 @@
     const self = this;
 
     this.validPlaceholder = (nameAttribute) => {
-      const msg = ['Введите ваше имя', 'Введите вашу комнату'];
+      const msg = [NAME_ERROR, ROOM_ERROR];
 
       self.elements.forEach((item, i) => {
         if (i === 0) item.setAttribute(nameAttribute, msg[0]);
@@ -22,45 +31,45 @@
     };
   }
 
-  window.onload = function() {
-    const fi = Factory('.form__input');
+  window.onload = function () {
+    const fi = Factory(".form__input");
     const form = document.forms.firstForm;
-    const inp = document.querySelectorAll('.form__input');
+    const inp = document.querySelectorAll(".form__input");
 
-    form.addEventListener('submit', (ev) => {
+    form.addEventListener("submit", (ev) => {
       inp.forEach((item) => {
-        if (item.value === '') {
+        if (item.value === "") {
           ev.preventDefault();
 
-          item.classList.add('error');
-          fi.validPlaceholder('placeholder');
+          item.classList.add("error");
+          fi.validPlaceholder("placeholder");
         }
         return item;
       });
     });
 
-    form.addEventListener('focusin', (ev) => {
+    form.addEventListener("focusin", (ev) => {
       const target = ev.target;
-      const msg = ['Введите имя', 'Введите имя комнаты'];
+      const msg = [NAME_PLACEHOLDER, ROOM_PLACEHOLDER];
 
-      switch (target.getAttribute('name')) {
-        case 'name': {
-          target.setAttribute('placeholder', msg[0]);
+      switch (target.getAttribute("name")) {
+        case "name": {
+          target.setAttribute("placeholder", msg[0]);
           break;
         }
-        case 'room': {
-          target.setAttribute('placeholder', msg[1]);
+        case "room": {
+          target.setAttribute("placeholder", msg[1]);
           break;
         }
       }
-      if (target.getAttribute('tabindex')) target.classList.remove('error');
+      if (target.getAttribute("tabindex")) target.classList.remove("error");
     });
 
-    form.addEventListener('focusout', () => {
+    form.addEventListener("focusout", () => {
       inp.forEach((item) => {
-        if (item.value === '') {
-          item.classList.add('error');
-          fi.validPlaceholder('placeholder', 'error');
+        if (item.value === "") {
+          item.classList.add("error");
+          fi.validPlaceholder("placeholder", "error");
         }
       });
     });
