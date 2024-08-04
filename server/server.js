@@ -5,6 +5,7 @@ const socketIO = require("socket.io");
 const { isRealString } = require("./utils/validation");
 const { Users } = require("./utils/users");
 const { generateMessage, generateLocationMessage } = require("./utils/message");
+const { generateUniqueColor } = require("./utils/color");
 const {
   CHAT_JOIN_ERROR,
   ADMIN_ROLE,
@@ -26,9 +27,10 @@ io.on("connection", (socket) => {
     if (!isRealString(params.name) || !isRealString(params.room))
       return callback(CHAT_JOIN_ERROR);
 
+    const userColors = generateUniqueColor();
     socket.join(params.room);
     users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, params.room);
+    users.addUser(socket.id, params.name, params.room, userColors);
 
     io.to(params.room).emit(
       "updateUserList",
@@ -36,6 +38,7 @@ io.on("connection", (socket) => {
       params.name
     );
     socket.emit("newMessage", generateMessage(ADMIN_ROLE, ADMIN_VALUE));
+    socket.emit("assignColors", userColors);
     socket.broadcast
       .to(params.room)
       .emit(
@@ -46,13 +49,18 @@ io.on("connection", (socket) => {
     callback();
   });
 
-  const clientsCount = socket.client.server.eio.clientsCount;
   socket.on("createMessage", (message, callback) => {
     const user = users.getUser(socket.id);
+    const clientsCount = socket.client.server.eio.clientsCount;
     if (user && isRealString(message.text))
       io.to(user.room).emit(
         "newMessage",
-        generateMessage(`${user.name}:`, message.text, clientsCount)
+        generateMessage(
+          `${user.name}:`,
+          message.text,
+          clientsCount,
+          user.colors
+        )
       );
 
     callback();
@@ -64,7 +72,12 @@ io.on("connection", (socket) => {
     if (user)
       io.to(user.room).emit(
         "newLocationMessage",
-        generateLocationMessage(user.name, coords.latitude, coords.longitude)
+        generateLocationMessage(
+          user.name,
+          coords.latitude,
+          coords.longitude,
+          user.colors
+        )
       );
   });
 

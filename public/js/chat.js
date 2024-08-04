@@ -1,14 +1,12 @@
 import {
   GEOLOCATION_ERROR,
   SERVER_GEOLOCATION_ERROR,
-  USER_COLOR_FIRST,
   GEOLOCATION_LOADING,
   GEOLOCATION_RULE,
   ROOM_INPUT,
   USER_INPUT,
   MAP,
   ADMIN_ROLE,
-  USER_COLOR_SECOND,
   USER_JOINED,
   ADMIN_VALUE,
 } from "./constants/index.js";
@@ -18,6 +16,7 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
 (function () {
   "user strict";
   const socket = io();
+  let userColors = {};
 
   socket.on("connect", () => {
     const params = new URL(document.location).searchParams;
@@ -32,6 +31,10 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
     });
   });
 
+  socket.on("assignColors", (colors) => {
+    userColors = colors;
+  });
+
   socket.on("disconnect", (users) => {
     console.log("disconnect users: ", users);
     const usersList = document.getElementById("users");
@@ -40,31 +43,27 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
 
   socket.on("updateUserList", (users, username) => {
     const usersList = document.getElementById("users");
+    usersList.innerHTML = ""; // Clear the list before updating
     users.forEach((user) => {
       const li = document.createElement("li");
-      li.setAttribute("class", `chat__sidebar-item item-${user}`);
-      if (users.includes(username)) {
-        li.textContent = user;
-        usersList.appendChild(li);
-        removeDuplicateDOMElement(li, user);
-      } else if (users.length !== usersList.childElementCount) {
-        [...usersList.childNodes].forEach((child) =>
-          child.textContent === username ? usersList.removeChild(child) : false
-        );
-      }
+      li.setAttribute("class", `chat__sidebar-item item-${user.name}`);
+      li.textContent = user.name;
+      li.style.backgroundColor = user.colors.backgroundColor;
+      li.style.color = user.colors.textColor;
+      usersList.appendChild(li);
     });
   });
 
   socket.on("newMessage", (message) => {
     const date = dateFormat(message.createAt);
     const template = document.getElementById("message__template").innerHTML;
-    const clientsCount = message.clientsCount;
     const html = Mustache.render(template, {
-      color: clientsCount === 1 ? USER_COLOR_FIRST : USER_COLOR_SECOND,
       text: message.text,
       from: message.from,
       createAt: date,
       role: message.from === ADMIN_ROLE && ADMIN_VALUE,
+      backgroundColor: message.colors.backgroundColor,
+      textColor: message.colors.textColor,
     });
 
     const msgListContainer = document.getElementById("messages__list");
@@ -74,8 +73,6 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
     while (p.firstChild) {
       fragment.appendChild(p.firstChild);
     }
-    // msgListContainer.appendChild(fragment);
-    // console.log('msgListContainer: ', msgListContainer);
     msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
     // scrollToBottom();
   });
@@ -89,6 +86,8 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
       from: message.from,
       url: message.url,
       createAt: date,
+      backgroundColor: message.colors.backgroundColor,
+      textColor: message.colors.textColor,
     });
 
     const msgListContainer = document.getElementById("messages__list");
@@ -98,7 +97,6 @@ import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js"
     while (span.firstChild) {
       fragment.appendChild(span.firstChild);
     }
-    // msgListContainer.appendChild(fragment);
     msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
     // scrollToBottom();
   });
