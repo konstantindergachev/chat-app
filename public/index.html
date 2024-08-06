@@ -19,7 +19,7 @@
             <h3>Войти в комнату</h3>
           </div>
           <div class="form-field">
-            <label for="">Ваше имя</label>
+            <label for="name">Ваше имя</label>
             <input
               id="name"
               class="form__input"
@@ -28,10 +28,11 @@
               autofocus
               placeholder="Имя"
               tabindex="1"
+              autocomplete="given-name"
             />
           </div>
           <div class="form-field">
-            <label for="">Имя комнаты</label>
+            <label for="room">Имя комнаты</label>
             <input
               id="room"
               class="form__input"
@@ -39,6 +40,7 @@
               name="room"
               placeholder="Комната"
               tabindex="2"
+              autocomplete="off"
             />
           </div>
           <div class="form-field">
@@ -53,8 +55,12 @@
         </form>
       </div>
     </section>
-    <footer class="footer">Харьков, Украина © 2024 Дергачёв Константин</footer>
+    <footer id="footer" class="footer"></footer>
+    <script id="footer__template" type="text/template">
+      {{place}} {{currentYear}} {{author}}
+    </script>
   </body>
-
+  <script src="/js/libs/mustache.min.js"></script>
   <script type="module" src="/js/utils/validate.js"></script>
+  <script type="module" src="/js/index.js"></script>
 </html>

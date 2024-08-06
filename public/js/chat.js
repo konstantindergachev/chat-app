@@ -11,7 +11,6 @@ import {
   ADMIN_VALUE,
 } from "./constants/index.js";
 import { dateFormat } from "./utils/dateFormat.js";
-import { removeDuplicateDOMElement } from "./utils/removeDuplicateDOMElement.js";
 
 (function () {
   "user strict";

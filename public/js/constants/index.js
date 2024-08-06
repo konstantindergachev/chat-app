@@ -19,3 +19,6 @@ export const GEOLOCATION_ERROR = "Геолокация не поддержива
 export const SERVER_GEOLOCATION_ERROR =
   "Нет возможности отправить ваше местоположение";
 export const MAP = "Карта";
+
+export const PLACE = "Харьков, Украина";
+export const AUTHOR = "Константин Дергачёв";
