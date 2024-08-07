@@ -9,6 +9,8 @@
   --error-color: #ff6347;
 
   --box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  --chat-footer-height: 58px;
+  --chat-footer-height-mobile: 148px;
 }
 
 *,
@@ -127,6 +129,7 @@ time {
   grid-template-rows: 1fr auto;
   min-height: 100vh;
   background: var(--third-color);
+  overflow-y: hidden;
 }
 .chat__sidebar {
   grid-column: 1 / 2;
@@ -154,6 +157,7 @@ time {
 
 .chat__messages {
   flex-grow: 1;
+  height: calc(100vh - var(--chat-footer-height));
   overflow-y: auto;
   list-style-type: none;
   margin-top: 5px;
@@ -235,6 +239,9 @@ time {
   }
   .chat__main {
     grid-column: 2 / -1;
+  }
+  .chat__messages {
+    height: calc(100vh - var(--chat-footer-height-mobile));
   }
   .chat__footer {
     grid-column: 1 / -1;

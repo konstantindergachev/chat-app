@@ -40,7 +40,7 @@ import { dateFormat } from "./utils/dateFormat.js";
     console.log("disconnect usersList: ", usersList);
   });
 
-  socket.on("updateUserList", (users, username) => {
+  socket.on("updateUserList", (users) => {
     const usersList = document.getElementById("users");
     usersList.innerHTML = ""; // Clear the list before updating
     users.forEach((user) => {
@@ -73,7 +73,6 @@ import { dateFormat } from "./utils/dateFormat.js";
       fragment.appendChild(p.firstChild);
     }
     msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
-    // scrollToBottom();
   });
 
   socket.on("newLocationMessage", (message) => {
@@ -97,7 +96,6 @@ import { dateFormat } from "./utils/dateFormat.js";
       fragment.appendChild(span.firstChild);
     }
     msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
-    // scrollToBottom();
   });
 
   const msgForm = document.getElementById("message__form");
