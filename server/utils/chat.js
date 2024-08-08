@@ -75,8 +75,8 @@ function chatHandler(io) {
 
     socket.on("disconnect", () => {
       const user = users.removeUser(socket.id);
-      console.log(`${user.name} ${USER_DISCONNECTED}`);
       if (user) {
+        console.log(`${user.name} ${USER_DISCONNECTED}`);
         io.to(user.room).emit(
           "updateUserList",
           users.getUserList(user.room),
