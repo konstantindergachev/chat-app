@@ -1,6 +1,7 @@
 "user strict";
 
-const { TIME_ZONE, GOOGLE_MAPS_ADDRESS } = require("../constants");
+const { dateFormat } = require("./dateFormat");
+const { GOOGLE_MAPS_ADDRESS } = require("../constants");
 
 const generateMessage = (
   from,
@@ -11,9 +12,7 @@ const generateMessage = (
   return {
     from,
     text,
-    createAt: new Date().toLocaleString(TIME_ZONE.short, {
-      timeZone: TIME_ZONE.full,
-    }),
+    createAt: dateFormat(),
     clientsCount,
     colors,
   };
@@ -28,9 +27,7 @@ const generateLocationMessage = (
   return {
     from,
     url: `${GOOGLE_MAPS_ADDRESS}${latitude},${longitude}`,
-    createAt: new Date().toLocaleString(TIME_ZONE.short, {
-      timeZone: TIME_ZONE.full,
-    }),
+    createAt: dateFormat(),
     colors,
   };
 };

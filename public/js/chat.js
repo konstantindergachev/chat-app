@@ -10,7 +10,6 @@ import {
   USER_JOINED,
   ADMIN_VALUE,
 } from "./constants/index.js";
-import { dateFormat } from "./utils/dateFormat.js";
 
 (function () {
   "user strict";
@@ -54,12 +53,11 @@ import { dateFormat } from "./utils/dateFormat.js";
   });
 
   socket.on("newMessage", (message) => {
-    const date = dateFormat(message.createAt);
     const template = document.getElementById("message__template").innerHTML;
     const html = Mustache.render(template, {
       text: message.text,
       from: message.from,
-      createAt: date,
+      createAt: message.createAt,
       role: message.from === ADMIN_ROLE && ADMIN_VALUE,
       backgroundColor: message.colors.backgroundColor,
       textColor: message.colors.textColor,
@@ -76,14 +74,13 @@ import { dateFormat } from "./utils/dateFormat.js";
   });
 
   socket.on("newLocationMessage", (message) => {
-    const date = dateFormat(message.createAt);
     const template = document.getElementById(
       "message__template-location"
     ).innerHTML;
     const html = Mustache.render(template, {
       from: message.from,
       url: message.url,
-      createAt: date,
+      createAt: message.createAt,
       backgroundColor: message.colors.backgroundColor,
       textColor: message.colors.textColor,
     });

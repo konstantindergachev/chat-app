@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "all": "npm-run-all -p start  lint:w",
-    "start": "node functions/app.js",
-    "dev": "node --watch functions/app.js",
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
     "lint": "esw webpack.config.* server public/js/validate.js",
     "lint:w": "npm run lint -- --watch",
-    "test": "mocha functions/**/*.test.js",
+    "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
     "build": "netlify deploy --prod"
   },
