@@ -9,9 +9,7 @@
     "dev": "node --watch server/server.js",
     "lint": "esw webpack.config.* server public/js/validate.js",
     "lint:w": "npm run lint -- --watch",
-    "test": "mocha server/**/*.test.js",
-    "test-watch": "nodemon --exec 'npm test'",
-    "build": "netlify deploy --prod"
+    "test": "mocha server/**/*.test.js"
   },
   "engines": {
     "node": "18.18.0"
