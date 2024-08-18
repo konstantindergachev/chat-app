@@ -1,8 +1,8 @@
-const CHAT_JOIN_ERROR = "Требуется ваше имя и имя комнаты.";
-const ADMIN_ROLE = "Админ:";
-const ADMIN_VALUE = "Добро пожаловать в чат";
-const USER_CAME_TO_THE_CHAT = "присоединился к нам";
-const USER_LEAVE_THE_CHAT = "ушёл";
+const CHAT_JOIN_ERROR = "Потрібне ваше ім'я та ім'я кімнати.";
+const ADMIN_ROLE = "Адмін:";
+const ADMIN_VALUE = "Ласкаво просимо до чату";
+const USER_CAME_TO_THE_CHAT = "приєднався до нас";
+const USER_LEAVE_THE_CHAT = "пішов";
 const USER_DISCONNECTED = "has left the chat.";
 const SERVER_STARTED = "Server started on port:";
 const TIME_ZONE = {
