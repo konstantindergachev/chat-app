@@ -1,13 +1,8 @@
 import {
-  GEOLOCATION_ERROR,
-  SERVER_GEOLOCATION_ERROR,
-  GEOLOCATION_LOADING,
-  GEOLOCATION_RULE,
+  UI_LANGUAGE,
   ROOM_INPUT,
   USER_INPUT,
-  MAP,
-  ADMIN_ROLE,
-  USER_JOINED,
+  LANG,
   ADMIN_VALUE,
 } from "./constants/index.js";
 
@@ -20,17 +15,96 @@ import {
     const params = new URL(document.location).searchParams;
     const name = params.get(USER_INPUT);
     const room = params.get(ROOM_INPUT);
-    const updParams = { name: name, room: room };
+    const lang = params.get(LANG);
+    const updParams = { name, room, lang };
     socket.emit("join", updParams, (err) => {
       if (err) {
         alert(err);
         window.location.href = "/";
-      } else console.log(USER_JOINED);
+      } else {
+        const toUserMessage =
+          lang === "en"
+            ? UI_LANGUAGE.en.USER_JOINED
+            : UI_LANGUAGE.ua.USER_JOINED;
+        console.log(toUserMessage);
+      }
     });
   });
 
   socket.on("assignColors", (colors) => {
     userColors = colors;
+  });
+  socket.on("uiLanguage", (language) => {
+    const template = document.getElementById("language__template").innerHTML;
+    const html =
+      language === "en"
+        ? Mustache.render(template, {
+            btnExit: "Exit",
+            placeholder: "Message",
+            btnSend: "Send",
+            btnMap: "Map",
+          })
+        : Mustache.render(template, {
+            btnExit: "Вихід",
+            placeholder: "Повідомлення",
+            btnSend: "Надіслати",
+            btnMap: "Карта",
+          });
+    document.getElementById("chat__footer").innerHTML = html;
+
+    const msgForm = document.getElementById("message__form");
+    msgForm.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      const messageTextbox = document.querySelector("[name=message]");
+      socket.emit(
+        "createMessage",
+        { text: messageTextbox.value },
+        () => (messageTextbox.value = "")
+      );
+    });
+
+    const lockBtn = document.getElementById("send__location");
+    lockBtn.addEventListener("click", () => {
+      const geoError =
+        language === "en"
+          ? UI_LANGUAGE.en.GEOLOCATION_ERROR
+          : UI_LANGUAGE.ua.GEOLOCATION_ERROR;
+      const geoLoading =
+        language === "en"
+          ? UI_LANGUAGE.en.GEOLOCATION_LOADING
+          : UI_LANGUAGE.ua.GEOLOCATION_LOADING;
+      if (!navigator.geolocation) return alert(geoError);
+      lockBtn.setAttribute("disabled", "disabled");
+      lockBtn.textContent = geoLoading;
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          lockBtn.removeAttribute("disabled");
+          lockBtn.textContent =
+            language === "en" ? UI_LANGUAGE.en.MAP : UI_LANGUAGE.ua.MAP;
+          socket.emit("createLocationMessage", {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => {
+          const geoRule =
+            language === "en"
+              ? UI_LANGUAGE.en.GEOLOCATION_RULE
+              : UI_LANGUAGE.ua.GEOLOCATION_RULE;
+          lockBtn.removeAttribute("disabled").textContent = geoRule;
+          const serverGeoError =
+            language === "en"
+              ? UI_LANGUAGE.en.SERVER_GEOLOCATION_ERROR
+              : UI_LANGUAGE.ua.SERVER_GEOLOCATION_ERROR;
+          alert(serverGeoError);
+        }
+      );
+    });
+
+    const outBtn = document.getElementById("chat__out");
+    outBtn.addEventListener("click", () => {
+      window.location.href = "/";
+    });
   });
 
   socket.on("disconnect", (users) => {
@@ -54,11 +128,15 @@ import {
 
   socket.on("newMessage", (message) => {
     const template = document.getElementById("message__template").innerHTML;
+    const role =
+      message.lang === "en"
+        ? UI_LANGUAGE.en.ADMIN_ROLE
+        : UI_LANGUAGE.ua.ADMIN_ROLE;
     const html = Mustache.render(template, {
       text: message.text,
       from: message.from,
       createAt: message.createAt,
-      role: message.from === ADMIN_ROLE && ADMIN_VALUE,
+      role: message.from === role && ADMIN_VALUE,
       backgroundColor: message.colors.backgroundColor,
       textColor: message.colors.textColor,
     });
@@ -94,39 +172,4 @@ import {
     }
     msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
   });
-
-  const msgForm = document.getElementById("message__form");
-  msgForm.addEventListener("submit", (ev) => {
-    ev.preventDefault();
-    const messageTextbox = document.querySelector("[name=message]");
-    socket.emit(
-      "createMessage",
-      { text: messageTextbox.value },
-      () => (messageTextbox.value = "")
-    );
-  });
-
-  const lockBtn = document.getElementById("send__location");
-  lockBtn.addEventListener("click", () => {
-    if (!navigator.geolocation) return alert(GEOLOCATION_ERROR);
-    lockBtn.setAttribute("disabled", "disabled");
-    lockBtn.textContent = GEOLOCATION_LOADING;
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        lockBtn.removeAttribute("disabled");
-        lockBtn.textContent = MAP;
-        socket.emit("createLocationMessage", {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      () => {
-        lockBtn.removeAttribute("disabled").textContent = GEOLOCATION_RULE;
-        alert(SERVER_GEOLOCATION_ERROR);
-      }
-    );
-  });
-
-  const outBtn = document.getElementById("chat__out");
-  outBtn.addEventListener("click", () => (window.location.href = "/"));
 })();

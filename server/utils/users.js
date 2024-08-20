@@ -4,8 +4,8 @@ class Users {
   constructor() {
     this.users = [];
   }
-  addUser(id, name, room, colors) {
-    const user = { id, name, room, colors };
+  addUser(id, name, room, colors, lang) {
+    const user = { id, name, room, colors, lang };
     this.users.push(user);
     return user;
   }

@@ -9,6 +9,13 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+app.use(express.json());
+app.post("/", (req, res) => {
+  const { name, room, lang } = req.body;
+  if (name && room) {
+    res.redirect(`/chat.html?username=${name}&room=${room}&lang=${lang}`);
+  }
+});
 chatHandler(io);
 
 const publicPath = path.join(__dirname, "../public");

@@ -12,47 +12,53 @@
   </head>
 
   <body class="centered-form">
+    <select name="lang" id="lang" class="lang" tabindex="4">
+      <option value="ua">Укр</option>
+      <option value="en">Eng</option>
+    </select>
     <section class="enter">
       <div class="centered-form__form">
-        <form action="/chat.html" name="firstForm">
+        <form name="firstForm" id="firstForm"></form>
+        <script id="firstForm__template" type="text/template">
+          <!-- <form action="/chat.html" name="firstForm"> -->
           <div class="form-field">
-            <h3>Увійти до кімнати</h3>
+            <h3>{{formTitle}}</h3>
           </div>
           <div class="form-field">
-            <label for="name">Ваше ім'я</label>
+            <label for="name">{{nameLabel}}</label>
             <input
               id="name"
               class="form__input"
               type="text"
               name="username"
               autofocus
-              placeholder="Ім'я"
+              placeholder={{namePlaceholder}}
               tabindex="1"
               autocomplete="given-name"
             />
           </div>
           <div class="form-field">
-            <label for="room">Ім'я кімнати</label>
+            <label for="room">{{roomLabel}}</label>
             <input
               id="room"
               class="form__input"
               type="text"
               name="room"
-              placeholder="Кімната"
+              placeholder={{roomPlaceholder}}
               tabindex="2"
               autocomplete="off"
-            />
+              />
           </div>
           <div class="form-field">
             <input
-              id="submit"
-              class="btn form__input"
-              type="submit"
-              ,
-              value="Увійти"
+            id="submit"
+            class="btn form__input"
+            type="submit"
+            tabindex="3"
+            value={{formBtn}}
             />
           </div>
-        </form>
+        </script>
       </div>
     </section>
     <footer id="footer" class="footer"></footer>
@@ -61,6 +67,6 @@
     </script>
   </body>
   <script src="/js/libs/mustache.min.js"></script>
-  <script type="module" src="/js/utils/validate.js"></script>
   <script type="module" src="/js/index.js"></script>
+  <script type="module" src="/js/utils/validate.js"></script>
 </html>

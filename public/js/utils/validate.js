@@ -1,77 +1,30 @@
-import {
-  NAME_ERROR,
-  ROOM_ERROR,
-  NAME_PLACEHOLDER,
-  ROOM_PLACEHOLDER,
-} from "../constants/index.js";
+import { UI_LANGUAGE } from "../constants/index.js";
 
-(function () {
-  "user strict";
+("user strict");
 
-  function Factory(selector) {
-    let elements = "";
-    selector instanceof HTMLElement
-      ? (elements = [selector])
-      : (elements = document.querySelectorAll(selector));
-    return new Selectors(elements);
-  }
+export function Factory(selector) {
+  let elements = "";
+  selector instanceof HTMLElement
+    ? (elements = [selector])
+    : (elements = document.querySelectorAll(selector));
+  return new Selectors(elements);
+}
 
-  function Selectors(elements) {
-    this.elements = elements;
-    const self = this;
+function Selectors(elements) {
+  this.elements = elements;
+  const self = this;
 
-    this.validPlaceholder = (nameAttribute) => {
-      const msg = [NAME_ERROR, ROOM_ERROR];
+  this.validPlaceholder = (nameAttribute, lang) => {
+    const nameError =
+      lang === "en" ? UI_LANGUAGE.en.NAME_ERROR : UI_LANGUAGE.ua.NAME_ERROR;
+    const roomError =
+      lang === "en" ? UI_LANGUAGE.en.ROOM_ERROR : UI_LANGUAGE.ua.ROOM_ERROR;
+    const msg = [nameError, roomError];
 
-      self.elements.forEach((item, i) => {
-        if (i === 0) item.setAttribute(nameAttribute, msg[0]);
-        if (i === 1) item.setAttribute(nameAttribute, msg[1]);
-      });
-      return self;
-    };
-  }
-
-  window.onload = function () {
-    const fi = Factory(".form__input");
-    const form = document.forms.firstForm;
-    const inp = document.querySelectorAll(".form__input");
-
-    form.addEventListener("submit", (ev) => {
-      inp.forEach((item) => {
-        if (item.value === "") {
-          ev.preventDefault();
-
-          item.classList.add("error");
-          fi.validPlaceholder("placeholder");
-        }
-        return item;
-      });
+    self.elements.forEach((item, i) => {
+      if (i === 0) item.setAttribute(nameAttribute, msg[0]);
+      if (i === 1) item.setAttribute(nameAttribute, msg[1]);
     });
-
-    form.addEventListener("focusin", (ev) => {
-      const target = ev.target;
-      const msg = [NAME_PLACEHOLDER, ROOM_PLACEHOLDER];
-
-      switch (target.getAttribute("name")) {
-        case "name": {
-          target.setAttribute("placeholder", msg[0]);
-          break;
-        }
-        case "room": {
-          target.setAttribute("placeholder", msg[1]);
-          break;
-        }
-      }
-      if (target.getAttribute("tabindex")) target.classList.remove("error");
-    });
-
-    form.addEventListener("focusout", () => {
-      inp.forEach((item) => {
-        if (item.value === "") {
-          item.classList.add("error");
-          fi.validPlaceholder("placeholder", "error");
-        }
-      });
-    });
+    return self;
   };
-})();
+}

@@ -3,18 +3,18 @@
 const { dateFormat } = require("./dateFormat");
 const { GOOGLE_MAPS_ADDRESS } = require("../constants");
 
-const generateMessage = (
+const generateMessage = ({
   from,
   text,
-  clientsCount,
-  colors = { backgroundColor: "#FFFFFF", textColor: "#000000" }
-) => {
+  colors = { backgroundColor: "transparent", textColor: "#000000" },
+  lang,
+}) => {
   return {
     from,
     text,
     createAt: dateFormat(),
-    clientsCount,
     colors,
+    lang,
   };
 };
 
@@ -22,7 +22,7 @@ const generateLocationMessage = (
   from,
   latitude,
   longitude,
-  colors = { backgroundColor: "#FFFFFF", textColor: "#000000" }
+  colors = { backgroundColor: "transparent", textColor: "#000000" }
 ) => {
   return {
     from,
