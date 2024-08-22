@@ -19,6 +19,10 @@ export const UI_LANGUAGE = {
     MAP: "map",
     PLACE: "Kharkiv, Ukraine",
     AUTHOR: "Kostya Dergachov",
+    CHAT_FORM_EXIT_BTN: "Exit",
+    CHAT_FORM_PLACEHOLDER: "Message",
+    CHAT_FORM_SEND_BTN: "Send",
+    CHAT_FORM_MAP_BTN: "Map",
   },
   ua: {
     FORM_TITLE: "Вхід до кімнати",
@@ -41,6 +45,10 @@ export const UI_LANGUAGE = {
     MAP: "Карта",
     PLACE: "Харків, Україна",
     AUTHOR: "Костянтин Дергачов",
+    CHAT_FORM_EXIT_BTN: "Вихід",
+    CHAT_FORM_PLACEHOLDER: "Повідомлення",
+    CHAT_FORM_SEND_BTN: "Надіслати",
+    CHAT_FORM_MAP_BTN: "Мапа",
   },
 };
 export const USER_INPUT = "username";

@@ -97,3 +97,53 @@ export const handleChange = (ev, props) => {
         });
   footer.innerHTML = footerHtml;
 };
+
+export const handleChatFormSubmit = (ev, { socket }) => {
+  ev.preventDefault();
+  const messageTextbox = document.querySelector("[name=message]");
+  socket.emit(
+    "createMessage",
+    { text: messageTextbox.value },
+    () => (messageTextbox.value = "")
+  );
+};
+
+export const handleSendLocation = (ev, props) => {
+  const { language, socket, lockBtn } = props;
+  const geoError =
+    language === "en"
+      ? UI_LANGUAGE.en.GEOLOCATION_ERROR
+      : UI_LANGUAGE.ua.GEOLOCATION_ERROR;
+  const geoLoading =
+    language === "en"
+      ? UI_LANGUAGE.en.GEOLOCATION_LOADING
+      : UI_LANGUAGE.ua.GEOLOCATION_LOADING;
+  if (!navigator.geolocation) return alert(geoError);
+  lockBtn.setAttribute("disabled", "disabled");
+  lockBtn.textContent = geoLoading;
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      lockBtn.removeAttribute("disabled");
+      lockBtn.textContent =
+        language === "en" ? UI_LANGUAGE.en.MAP : UI_LANGUAGE.ua.MAP;
+      socket.emit("createLocationMessage", {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    },
+    () => {
+      const geoRule =
+        language === "en"
+          ? UI_LANGUAGE.en.GEOLOCATION_RULE
+          : UI_LANGUAGE.ua.GEOLOCATION_RULE;
+      lockBtn.removeAttribute("disabled").textContent = geoRule;
+      const serverGeoError =
+        language === "en"
+          ? UI_LANGUAGE.en.SERVER_GEOLOCATION_ERROR
+          : UI_LANGUAGE.ua.SERVER_GEOLOCATION_ERROR;
+      alert(serverGeoError);
+    }
+  );
+};
+
+export const handleChatExit = () => (window.location.href = "/");
