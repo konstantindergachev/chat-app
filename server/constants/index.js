@@ -14,6 +14,10 @@ const LANG = {
     USER_LEAVE_THE_CHAT: "пішов",
   },
 };
+
+const POSITION_FIRST_USER = "left";
+const POSITION_SECOND_USER = "right";
+
 const USER_DISCONNECTED = "has left the chat.";
 const SERVER_STARTED = "Server started on port:";
 const TIME_ZONE = {
@@ -24,6 +28,8 @@ const GOOGLE_MAPS_ADDRESS = "https://www.google.com/maps?q=";
 
 module.exports = {
   LANG,
+  POSITION_FIRST_USER,
+  POSITION_SECOND_USER,
   USER_DISCONNECTED,
   SERVER_STARTED,
   TIME_ZONE,

@@ -8,6 +8,7 @@ const generateMessage = ({
   text,
   colors = { backgroundColor: "transparent", textColor: "#000000" },
   lang,
+  messagePosition,
 }) => {
   return {
     from,
@@ -15,20 +16,23 @@ const generateMessage = ({
     createAt: dateFormat(),
     colors,
     lang,
+    messagePosition,
   };
 };
 
-const generateLocationMessage = (
+const generateLocationMessage = ({
   from,
   latitude,
   longitude,
-  colors = { backgroundColor: "transparent", textColor: "#000000" }
-) => {
+  colors = { backgroundColor: "transparent", textColor: "#000000" },
+  messagePosition,
+}) => {
   return {
     from,
     url: `${GOOGLE_MAPS_ADDRESS}${latitude},${longitude}`,
     createAt: dateFormat(),
     colors,
+    messagePosition,
   };
 };
 

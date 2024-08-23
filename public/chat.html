@@ -35,7 +35,7 @@
       <button id="send__location" class="btn">{{btnMap}}</button>
     </script>
     <script id="message__template" type="text/template">
-      <li class="message {{role}}" style="background-color: {{backgroundColor}}; color: {{textColor}}">
+      <li class="message {{position}}{{role}}" style="background-color: {{backgroundColor}}; color: {{textColor}}">
         <div class="message__title">
           <p>{{from}}</p>
           <time>{{createAt}}</time>
@@ -46,7 +46,7 @@
       </li>
     </script>
     <script id="message__template-location" type="text/template">
-      <li class="message" style="background-color: {{backgroundColor}}; color: {{textColor}}">
+      <li class="message {{position}}" style="background-color: {{backgroundColor}}; color: {{textColor}}">
         <div class="message__title">
           <h4>{{from}}</h4>
           <span>{{createAt}}</span>

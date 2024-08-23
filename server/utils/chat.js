@@ -2,7 +2,12 @@ const { Users } = require("./users");
 const { isRealString } = require("./validation");
 const { generateMessage, generateLocationMessage } = require("./message");
 const { generateUniqueColor } = require("./color");
-const { LANG, USER_DISCONNECTED } = require("../constants");
+const {
+  LANG,
+  POSITION_FIRST_USER,
+  POSITION_SECOND_USER,
+  USER_DISCONNECTED,
+} = require("../constants");
 
 const users = new Users();
 function chatHandler(io) {
@@ -66,6 +71,10 @@ function chatHandler(io) {
 
     socket.on("createMessage", (message, callback) => {
       const user = users.getUser(socket.id);
+      const meessagePosition =
+        users.users[0].id === socket.id
+          ? POSITION_FIRST_USER
+          : POSITION_SECOND_USER;
       if (user && isRealString(message.text))
         io.to(user.room).emit(
           "newMessage",
@@ -73,6 +82,7 @@ function chatHandler(io) {
             from: `${user.name}:`,
             text: message.text,
             colors: user.colors,
+            messagePosition: meessagePosition,
           })
         );
 
@@ -81,16 +91,20 @@ function chatHandler(io) {
 
     socket.on("createLocationMessage", (coords) => {
       const user = users.getUser(socket.id);
-
+      const meessagePosition =
+        users.users[0].id === socket.id
+          ? POSITION_FIRST_USER
+          : POSITION_SECOND_USER;
       if (user)
         io.to(user.room).emit(
           "newLocationMessage",
-          generateLocationMessage(
-            user.name,
-            coords.latitude,
-            coords.longitude,
-            user.colors
-          )
+          generateLocationMessage({
+            from: user.name,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            colors: user.colors,
+            messagePosition: meessagePosition,
+          })
         );
     });
 

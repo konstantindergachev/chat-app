@@ -159,6 +159,8 @@ time {
 }
 
 .chat__messages {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   height: calc(100vh - var(--chat-footer-height));
   overflow-y: auto;
@@ -197,6 +199,18 @@ time {
   color: var(--admin-color);
   border-radius: 5px;
   box-shadow: var(--box-shadow);
+}
+
+.left,
+.right {
+  max-width: 50%;
+  width: 100%;
+}
+.left {
+  align-self: start;
+}
+.right {
+  align-self: end;
 }
 
 .message__title {
