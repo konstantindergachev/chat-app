@@ -18,48 +18,35 @@
     <div class="chat__main">
       <ol id="messages__list" class="chat__messages"></ol>
     </div>
-    <div class="chat__footer">
-      <button id="chat__out" class="btn chat__btn">Вихід</button>
+    <div class="chat__footer" id="chat__footer"></div>
+    <script id="message-form__template" type="text/template">
+      <button id="chat__out" class="btn chat__btn">{{btnExit}}</button>
       <form id="message__form" class="message__form">
         <input
-          class="message__form-input"
-          type="text"
-          name="message"
-          placeholder="Повідомлення"
-          autofocus
-          autocomplete="off"
+        class="message__form-input"
+        type="text"
+        name="message"
+        placeholder={{placeholder}}
+        autofocus
+        autocomplete="off"
         />
-        <button class="btn">Надіслати</button>
+        <button class="btn">{{btnSend}}</button>
       </form>
-      <button id="send__location" class="btn">Карта</button>
-    </div>
-
+      <button id="send__location" class="btn">{{btnMap}}</button>
+    </script>
     <script id="message__template" type="text/template">
-      {{#role}}
-        <li class="message admin">
-          <div class="message__title">
-            <p>{{from}}</p>
-            <time>{{createAt}}</time>
-          </div>
-          <div class="message__body">
-            <h4>{{text}}</h4>
-          </div>
-        </li>
-      {{/role}}
-      {{^role}}
-        <li class="message" style="background-color: {{backgroundColor}}; color: {{textColor}}">
-          <div class="message__title">
-            <p>{{from}}</p>
-            <time>{{createAt}}</time>
-          </div>
-          <div class="message__body">
-            <h4>{{text}}</h4>
-          </div>
-        </li>
-      {{/role}}
+      <li class="message {{position}}{{role}}" style="background-color: {{backgroundColor}}; color: {{textColor}}">
+        <div class="message__title">
+          <p>{{from}}</p>
+          <time>{{createAt}}</time>
+        </div>
+        <div class="message__body">
+          <h4>{{text}}</h4>
+        </div>
+      </li>
     </script>
     <script id="message__template-location" type="text/template">
-      <li class="message" style="background-color: {{backgroundColor}}; color: {{textColor}}">
+      <li class="message {{position}}" style="background-color: {{backgroundColor}}; color: {{textColor}}">
         <div class="message__title">
           <h4>{{from}}</h4>
           <span>{{createAt}}</span>
