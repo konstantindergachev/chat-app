@@ -1,132 +1,89 @@
+"user strict";
+
 import {
-  GEOLOCATION_ERROR,
-  SERVER_GEOLOCATION_ERROR,
-  GEOLOCATION_LOADING,
-  GEOLOCATION_RULE,
+  UI_LANGUAGE,
   ROOM_INPUT,
   USER_INPUT,
-  MAP,
-  ADMIN_ROLE,
-  USER_JOINED,
-  ADMIN_VALUE,
+  LANG,
 } from "./constants/index.js";
+import {
+  handleChatFormSubmit,
+  handleSendLocation,
+  handleChatExit,
+} from "./handlers/index.js";
+import { createMessage } from "./utils/createMessage.js";
+import { createMessageForm } from "./utils/createMessageForm.js";
+import { createUserList } from "./utils/createUserList.js";
 
-(function () {
-  "user strict";
-  const socket = io();
-  let userColors = {};
+const socket = io();
+let userColors = {};
 
-  socket.on("connect", () => {
-    const params = new URL(document.location).searchParams;
-    const name = params.get(USER_INPUT);
-    const room = params.get(ROOM_INPUT);
-    const updParams = { name: name, room: room };
-    socket.emit("join", updParams, (err) => {
-      if (err) {
-        alert(err);
-        window.location.href = "/";
-      } else console.log(USER_JOINED);
-    });
-  });
-
-  socket.on("assignColors", (colors) => {
-    userColors = colors;
-  });
-
-  socket.on("disconnect", (users) => {
-    console.log("disconnect users: ", users);
-    const usersList = document.getElementById("users");
-    console.log("disconnect usersList: ", usersList);
-  });
-
-  socket.on("updateUserList", (users) => {
-    const usersList = document.getElementById("users");
-    usersList.innerHTML = ""; // Clear the list before updating
-    users.forEach((user) => {
-      const li = document.createElement("li");
-      li.setAttribute("class", `chat__sidebar-item item-${user.name}`);
-      li.textContent = user.name;
-      li.style.backgroundColor = user.colors.backgroundColor;
-      li.style.color = user.colors.textColor;
-      usersList.appendChild(li);
-    });
-  });
-
-  socket.on("newMessage", (message) => {
-    const template = document.getElementById("message__template").innerHTML;
-    const html = Mustache.render(template, {
-      text: message.text,
-      from: message.from,
-      createAt: message.createAt,
-      role: message.from === ADMIN_ROLE && ADMIN_VALUE,
-      backgroundColor: message.colors.backgroundColor,
-      textColor: message.colors.textColor,
-    });
-
-    const msgListContainer = document.getElementById("messages__list");
-    const fragment = document.createDocumentFragment();
-    const p = document.createElement("p");
-    p.innerHTML = html;
-    while (p.firstChild) {
-      fragment.appendChild(p.firstChild);
+socket.on("connect", () => {
+  const params = new URL(document.location).searchParams;
+  const name = params.get(USER_INPUT);
+  const room = params.get(ROOM_INPUT);
+  const lang = params.get(LANG);
+  const updParams = { name, room, lang };
+  socket.emit("join", updParams, (err) => {
+    if (err) {
+      alert(err);
+      handleChatExit();
+    } else {
+      const toUserMessage =
+        lang === "en" ? UI_LANGUAGE.en.USER_JOINED : UI_LANGUAGE.ua.USER_JOINED;
+      console.log(toUserMessage);
     }
-    msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
   });
+});
 
-  socket.on("newLocationMessage", (message) => {
-    const template = document.getElementById(
-      "message__template-location"
-    ).innerHTML;
-    const html = Mustache.render(template, {
-      from: message.from,
-      url: message.url,
-      createAt: message.createAt,
-      backgroundColor: message.colors.backgroundColor,
-      textColor: message.colors.textColor,
-    });
-
-    const msgListContainer = document.getElementById("messages__list");
-    const fragment = document.createDocumentFragment();
-    const span = document.createElement("span");
-    span.innerHTML = html;
-    while (span.firstChild) {
-      fragment.appendChild(span.firstChild);
-    }
-    msgListContainer.insertBefore(fragment, msgListContainer.firstElementChild);
-  });
+socket.on("assignColors", (colors) => {
+  userColors = colors;
+});
+socket.on("uiLanguage", (language) => {
+  const template = document.getElementById("message-form__template").innerHTML;
+  createMessageForm({ template, language });
 
   const msgForm = document.getElementById("message__form");
-  msgForm.addEventListener("submit", (ev) => {
-    ev.preventDefault();
-    const messageTextbox = document.querySelector("[name=message]");
-    socket.emit(
-      "createMessage",
-      { text: messageTextbox.value },
-      () => (messageTextbox.value = "")
-    );
-  });
+  msgForm.addEventListener("submit", (ev) =>
+    handleChatFormSubmit(ev, { socket })
+  );
 
   const lockBtn = document.getElementById("send__location");
-  lockBtn.addEventListener("click", () => {
-    if (!navigator.geolocation) return alert(GEOLOCATION_ERROR);
-    lockBtn.setAttribute("disabled", "disabled");
-    lockBtn.textContent = GEOLOCATION_LOADING;
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        lockBtn.removeAttribute("disabled");
-        lockBtn.textContent = MAP;
-        socket.emit("createLocationMessage", {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      () => {
-        lockBtn.removeAttribute("disabled").textContent = GEOLOCATION_RULE;
-        alert(SERVER_GEOLOCATION_ERROR);
-      }
-    );
-  });
+  lockBtn.addEventListener("click", (ev) =>
+    handleSendLocation(ev, { language, socket, lockBtn })
+  );
 
   const outBtn = document.getElementById("chat__out");
-  outBtn.addEventListener("click", () => (window.location.href = "/"));
-})();
+  outBtn.addEventListener("click", handleChatExit);
+});
+
+socket.on("disconnect", (users) => {
+  console.log("disconnect users: ", users);
+  const usersList = document.getElementById("users");
+  console.log("disconnect usersList: ", usersList);
+});
+
+socket.on("updateUserList", (users) => {
+  const usersList = document.getElementById("users");
+  usersList.innerHTML = ""; // Clear the list before updating
+  const elementName = "li";
+  createUserList({ users, usersList, elementName });
+});
+
+socket.on("newMessage", (message) => {
+  const template = document.getElementById("message__template").innerHTML;
+  const role =
+    message.lang === "en"
+      ? UI_LANGUAGE.en.ADMIN_ROLE
+      : UI_LANGUAGE.ua.ADMIN_ROLE;
+  const element = document.createElement("p");
+  createMessage({ message, role, template, element });
+});
+
+socket.on("newLocationMessage", (message) => {
+  const template = document.getElementById(
+    "message__template-location"
+  ).innerHTML;
+  const element = document.createElement("span");
+  createMessage({ message, template, element });
+});

@@ -57,6 +57,9 @@ h3 {
 time {
   font-size: 0.7rem;
 }
+.lang {
+  margin-top: 10px;
+}
 
 /*---------- form ----------*/
 .centered-form {
@@ -156,6 +159,8 @@ time {
 }
 
 .chat__messages {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   height: calc(100vh - var(--chat-footer-height));
   overflow-y: auto;
@@ -196,6 +201,18 @@ time {
   box-shadow: var(--box-shadow);
 }
 
+.left,
+.right {
+  max-width: 50%;
+  width: 100%;
+}
+.left {
+  align-self: start;
+}
+.right {
+  align-self: end;
+}
+
 .message__title {
   display: flex;
   justify-content: space-between;
@@ -210,7 +227,6 @@ time {
 .admin {
   padding: 5px;
   border-radius: 5px;
-  color: var(--message-color);
   margin-bottom: 5px;
   font-size: 0.7rem;
   box-shadow: none;
@@ -251,7 +267,10 @@ time {
   .chat__footer .chat__btn {
     margin: 10px 0px 0px 0px;
   }
-
+  .left,
+  .right {
+    max-width: 100%;
+  }
   .message__form {
     margin-bottom: 10px;
     margin-right: 0;
