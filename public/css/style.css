@@ -267,7 +267,10 @@ time {
   .chat__footer .chat__btn {
     margin: 10px 0px 0px 0px;
   }
-
+  .left,
+  .right {
+    max-width: 100%;
+  }
   .message__form {
     margin-bottom: 10px;
     margin-right: 0;
