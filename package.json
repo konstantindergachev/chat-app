@@ -17,7 +17,7 @@
   "author": "Konstantin Dergachev",
   "license": "ISC",
   "dependencies": {
-    "express": "4.19.2",
+    "express": "4.21.0",
     "socket.io": "4.7.5"
   },
   "devDependencies": {
